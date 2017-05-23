@@ -1,0 +1,15 @@
+﻿Сборка начата 23.05.2017 18:30:39.
+     1>Проект "C:\Users\Margo\Desktop\Mine\Study\m1_1\2_term\image processing\CaptchaRecognizer\Captcha\Captcha.vcxproj" в узле 2 (целевые объекты Build).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I"C:\Program Files\openCV2.4.10\opencv\build\include" /Zi /nologo /W3 /WX- /sdl /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt PreprocessingForNeuronNet.cpp
+         PreprocessingForNeuronNet.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Margo\Desktop\Mine\Study\m1_1\2_term\image processing\CaptchaRecognizer\x64\Debug\Captcha.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\openCV2.4.10\opencv\build\x64\vc12\lib" opencv_core2410d.lib opencv_features2d2410d.lib opencv_highgui2410d.lib opencv_imgproc2410d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Margo\Desktop\Mine\Study\m1_1\2_term\image processing\CaptchaRecognizer\x64\Debug\Captcha.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Margo\Desktop\Mine\Study\m1_1\2_term\image processing\CaptchaRecognizer\x64\Debug\Captcha.lib" /MACHINE:X64 x64\Debug\main.obj
+         x64\Debug\PreprocessingForNeuronNet.obj
+         x64\Debug\RedAlgorithm.obj
+         Captcha.vcxproj -> C:\Users\Margo\Desktop\Mine\Study\m1_1\2_term\image processing\CaptchaRecognizer\x64\Debug\Captcha.exe
+     1>Сборка проекта "C:\Users\Margo\Desktop\Mine\Study\m1_1\2_term\image processing\CaptchaRecognizer\Captcha\Captcha.vcxproj" завершена (целевые объекты Build).
+
+Сборка успешно завершена.
+
+Затраченное время: 00:00:03.28
