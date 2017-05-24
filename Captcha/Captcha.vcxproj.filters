@@ -24,6 +24,9 @@
     <ClCompile Include="PreprocessingForNeuronNet.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="BlueAlgorithm.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Captcha.h">
@@ -36,6 +39,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="PreprocessingForNeuronNet.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueAlgorithm.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

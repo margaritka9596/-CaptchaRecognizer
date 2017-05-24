@@ -151,11 +151,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlueAlgorithm.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PreprocessingForNeuronNet.cpp" />
     <ClCompile Include="RedAlgorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlueAlgorithm.h" />
     <ClInclude Include="Captcha.h" />
     <ClInclude Include="Classes.h" />
     <ClInclude Include="PreprocessingForNeuronNet.h" />
