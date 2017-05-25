@@ -1,5 +1,4 @@
 #include "Captcha.h"
-//#include "RedAlgorithm.h"
 #include "Classes.h"
 
 const int imgW = 83;
@@ -191,17 +190,21 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 		}
 	}
 
-	for (int i = 0; i < FinalSegments.size(); ++i)
+/*	for (int i = 0; i < FinalSegments.size(); ++i)
 	{
 		imshow("Finalseg" + i, FinalSegments[i]);
 	}
-
+*/
 	PreprocessingForNeuronNet obj;
 	FinalSegments = obj.ResizeAndChangeBackground(FinalSegments);
 
 	for (int i = 0; i < FinalSegments.size(); ++i)
 	{
-		imshow("FinalsegResized" + i, FinalSegments[i]);
+		//imshow("FinalsegResized" + i, FinalSegments[i]);
+		string ext = ".jpg";
+		string z = "C:\\Users\\Margo\\Desktop\\try\\SegmentNum_" + to_string(i) + ext;
+		const char* z1 = z.c_str();
+		imwrite(z1, FinalSegments[i]);
 	}
 	cout << "size after filter" << FinalSegments.size() << endl;
 	

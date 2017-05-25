@@ -1,5 +1,5 @@
 #include "Captcha.h"
-#include "BlueAlgorithm.h"
+#include "classes.h"
 
 vector<Mat> BlueAlgorithm::Preprocessing(Mat inputImg)
 {

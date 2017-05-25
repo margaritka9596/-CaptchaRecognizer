@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="BlueAlgorithm.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NeuronNetByEtalons.cpp" />
     <ClCompile Include="PreprocessingForNeuronNet.cpp" />
     <ClCompile Include="RedAlgorithm.cpp" />
   </ItemGroup>
@@ -160,6 +161,7 @@
     <ClInclude Include="BlueAlgorithm.h" />
     <ClInclude Include="Captcha.h" />
     <ClInclude Include="Classes.h" />
+    <ClInclude Include="NeuronNetByEtalons.h" />
     <ClInclude Include="PreprocessingForNeuronNet.h" />
     <ClInclude Include="RedAlgorithm.h" />
   </ItemGroup>

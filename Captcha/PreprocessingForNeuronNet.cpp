@@ -28,7 +28,9 @@ vector<Mat> PreprocessingForNeuronNet::ResizeAndChangeBackground(vector<Mat> inp
 
 		cvtColor(inputImg, inputImg, CV_BGR2GRAY);
 		//inputImg = changeBackground(inputImg);
-		threshold(inputImg, inputImg, 0, 255, THRESH_BINARY_INV);
+
+		//TODO
+		threshold(inputImg, inputImg, 0.0, 255.0, THRESH_BINARY_INV);
 
 		int rImgW = 118;
 		int rImgH = 227;

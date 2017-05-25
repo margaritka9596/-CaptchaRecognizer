@@ -83,12 +83,18 @@ string captchaRecognize(Mat image) {
 	int flag = 0;
 	vector<Mat> result;
 	//RedAlgorithm obj = RedAlgorithm();
-	RedAlgorithm obj;
+	RedAlgorithm redAlgoritm;
+	NeuronNetByEtalons neuronNetByEtalons;
+	string cptch;
 	switch (flag)
 	{
 	case 0:
 		//cout << getexepath() << endl;
-		result = obj.Preprocessing(image);
+		result = redAlgoritm.Preprocessing(image);
+		cout << "hi" << endl;
+		
+		cptch = neuronNetByEtalons.recognizeSegments("red", result);
+		cout << "res = " << cptch << endl;
 		//imshow("image1", resullt);
 		return "-";
 		break;
