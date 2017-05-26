@@ -33,16 +33,20 @@ vector<int> binarizeBitmap(Mat image)
 
 	vector<int> binarized(h * w + 1);
 	for (int j = 0; j < h; ++j)
+	{
 		for (int i = 0; i < w; ++i)
 		{
 			//Vec2b color = image.at<Vec2b>(j,i);
 			uchar color = image.at<uchar>(j, i);
 			//TODO
+			//cout << static_cast<int>(color) << " ";
 			if (color < backgroundColor)
 				binarized[j * w + i] = 1;
 			else
 				binarized[j * w + i] = 0;
 		}
+		//cout << endl;
+	}
 	return binarized;
 }
 
@@ -76,7 +80,7 @@ void uploadEtalons(string srcPath, string algorithmName) //algorithmName - lowca
 		while ((ent = readdir(dir)) != NULL) {
 			string filename = ent->d_name;
 			string label = filename.substr(0, filename.find('.'));
-			Mat image = imread(pathToEtalonsChar + filename, CV_LOAD_IMAGE_COLOR);
+			Mat image = imread(pathToEtalonsChar + filename, CV_LOAD_IMAGE_GRAYSCALE);
 
 			string extension = filename.substr(filename.find('.'), filename.length());
 			if (extension == ".jpg")
@@ -229,6 +233,8 @@ string NeuronNetByEtalons::recognizeSegments(string algoritmName, vector<Mat> se
 	uploadEtalons(path, algoritmName);
 	trainNet();
 
+
+	cout << "___________________test__________________" << endl;
 	for (int i = 0; i < segments.size(); ++i)
 	{
 		//imshow("", segments[i]);

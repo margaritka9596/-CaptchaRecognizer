@@ -82,19 +82,50 @@ string captchaRecognize(Mat image) {
 	//return "-";
 	int flag = 0;
 	vector<Mat> result;
+	vector<Mat> result1;
+
 	//RedAlgorithm obj = RedAlgorithm();
 	RedAlgorithm redAlgoritm;
 	NeuronNetByEtalons neuronNetByEtalons;
 	string cptch;
+	
+	//
+	string pathToEtalons = "C:\\Users\\Margo\\Desktop\\try\\";
+	const char* pathToEtalonsChar = pathToEtalons.c_str();
+	//
 	switch (flag)
 	{
 	case 0:
 		//cout << getexepath() << endl;
 		result = redAlgoritm.Preprocessing(image);
-		cout << "hi" << endl;
+		std::cout << "hi" << endl;
 		
-		cptch = neuronNetByEtalons.recognizeSegments("red", result);
-		cout << "res = " << cptch << endl;
+		///
+		
+
+		DIR *dir;
+		struct dirent *ent;
+		if ((dir = opendir(pathToEtalonsChar)) != NULL) {
+			ent = readdir(dir);
+			ent = readdir(dir);
+			while ((ent = readdir(dir)) != NULL) {
+				string filename = ent->d_name;
+				string label = filename.substr(0, filename.find('.'));
+				Mat image = imread(pathToEtalonsChar + filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+				string extension = filename.substr(filename.find('.'), filename.length());
+				if (extension == ".jpg")
+					result1.push_back(image);
+			}
+			closedir(dir);
+		}
+		else
+			perror("");
+		///
+
+		cptch = neuronNetByEtalons.recognizeSegments("red", result1);
+
+		std::cout << "res = " << cptch << endl;
 		//imshow("image1", resullt);
 		return "-";
 		break;
@@ -147,8 +178,8 @@ int main(int argc, char* argv[])
 	src = src.substr(0, src.find_last_of("\\"));
 	src = src.substr(0, src.find_last_of("\\"));
 
-	cout << argv_str << endl;
-	cout << src << endl;
+	std::cout << argv_str << endl;
+	std::cout << src << endl;
 
 	string redTrainsetPath = src + "\\Captcha\\trainset\\red\\trainset\\";
 	const char* Path = redTrainsetPath.c_str();
@@ -157,7 +188,7 @@ int main(int argc, char* argv[])
 	vector<string> results = fitCaptchaResult(box);
 	vector<int> distances = fitLevenshteinDistance(box, results);
 	pair<double, double> temp = writeResult(box, results, distances);
-	cout << temp.first << endl << temp.second << endl;
+	std::cout << temp.first << endl << temp.second << endl;
 	waitKey();
 	return 0;
 }
