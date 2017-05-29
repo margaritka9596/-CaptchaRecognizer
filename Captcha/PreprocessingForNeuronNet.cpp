@@ -6,7 +6,6 @@ Mat changeBackground(Mat inputImg)
 	for (int i = 0; i < inputImg.cols; ++i)
 		for (int j = 0; j < inputImg.rows; ++j)
 		{
-
 			uchar &color = inputImg.at<uchar>(j, i);
 			if (color == 255)
 				color = 0;
@@ -21,7 +20,7 @@ vector<Mat> PreprocessingForNeuronNet::ResizeAndChangeBackground(vector<Mat> inp
 {
 	vector<Mat> result;
 
-	for (int i = 0; i < inputSegments.size(); ++i)
+	for (unsigned int i = 0; i < inputSegments.size(); ++i)
 	{
 		Mat inputImg;
 		inputSegments[i].copyTo(inputImg);

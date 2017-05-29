@@ -8,8 +8,9 @@
 #include <cmath>
 #include <math.h>
 
+#define TEXTFILE "result.txt"
+
 using namespace std;
 using namespace cv;
 
-
-
+typedef pair<Mat, string> captcha;

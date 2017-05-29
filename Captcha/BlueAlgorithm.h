@@ -3,5 +3,8 @@
 class BlueAlgorithm
 {
 public:
-	vector<Mat> Preprocessing(Mat inputImg);
+	Mat Preprocessing(Mat inputImg);
+	vector<Mat> Segmentate(Mat inputImg);
+	string RecognizeSegments(vector<Mat> segments);
+	string Recognize(Mat segments);
 };

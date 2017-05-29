@@ -1,30 +1,6 @@
 #include "Classes.h"
 
-//#define MYDIRECTORY "C:\\Users\\Margo\\Desktop\\Mine\\Study\\m1_1\\2_term\\image processing\\CaptchaRecognizer\\Captcha\\trainset\\red\\trainset\\"
-#define TEXTFILE "result.txt"
-
-typedef pair<Mat, string> captcha;
-
-vector<captcha> getCaptcha(const char* path) {
-	vector<captcha> box;
-	DIR *dir;
-	struct dirent *ent;
-	if ((dir = opendir(path)) != NULL) {
-		ent = readdir(dir);
-		ent = readdir(dir);
-		while ((ent = readdir(dir)) != NULL) {
-			string filename = ent->d_name;
-			string value = filename.substr(0, filename.find('.'));
-			Mat image = imread(path + filename, CV_LOAD_IMAGE_COLOR);
-			pair<Mat, string> temp(image, value);
-			box.push_back(temp);
-		}
-		closedir(dir); 
-	}
-	else 
-		perror("");
-	return box;
-}
+#define MYDIRECTORY "trainset\\blue\\trainset\\"
 
 int min(int a, int b, int c) {
 	if (a < b)
@@ -72,11 +48,13 @@ string getDiff(string value, string testvalue) {
 	return result;
 }
 
-/*std::string getexepath()
+/*
+std::string getexepath()
 {
 	char result[MAX_PATH];
 	return std::string(result, GetModuleFileName(NULL, result, MAX_PATH));
-}*/
+}
+*/
 
 string captchaRecognize(Mat image) {
 	//return "-";
@@ -102,7 +80,6 @@ string captchaRecognize(Mat image) {
 		
 		///
 		
-
 		DIR *dir;
 		struct dirent *ent;
 		if ((dir = opendir(pathToEtalonsChar)) != NULL) {
@@ -123,7 +100,7 @@ string captchaRecognize(Mat image) {
 			perror("");
 		///
 
-		cptch = neuronNetByEtalons.recognizeSegments("red", result1);
+		cptch = neuronNetByEtalons.recognizeSegments(result1, "red");
 
 		std::cout << "res = " << cptch << endl;
 		//imshow("image1", resullt);
@@ -143,7 +120,7 @@ vector<string> fitCaptchaResult(vector<captcha> box) {
 	//int endI = box.size();
 	int endI = 1;
 
-	for (unsigned int i = 0; i < endI; ++i) {
+	for (int i = 0; i < endI; ++i) {
 		result[i] = captchaRecognize(box[i].first);
 	}
 	return result;
@@ -173,22 +150,33 @@ pair<double, double> writeResult(vector<captcha> box, vector<string> results, ve
 
 int main(int argc, char* argv[])
 {
-	string argv_str(argv[0]);
-	string src = argv_str.substr(0, argv_str.find_last_of("\\"));
-	src = src.substr(0, src.find_last_of("\\"));
-	src = src.substr(0, src.find_last_of("\\"));
+	//string argv_str(argv[0]);
+	//string src = argv_str.substr(0, argv_str.find_last_of("\\"));
+	//src = src.substr(0, src.find_last_of("\\"));
+	//src = src.substr(0, src.find_last_of("\\"));
 
-	std::cout << argv_str << endl;
-	std::cout << src << endl;
+	//std::cout << argv_str << endl;
+	//std::cout << src << endl;
 
-	string redTrainsetPath = src + "\\Captcha\\trainset\\red\\trainset\\";
-	const char* Path = redTrainsetPath.c_str();
+	//string redTrainsetPath = src + "\\Captcha\\trainset\\red\\trainset\\";
+	//const char* Path = redTrainsetPath.c_str();
 
-	vector<captcha> box = getCaptcha(Path);
-	vector<string> results = fitCaptchaResult(box);
-	vector<int> distances = fitLevenshteinDistance(box, results);
-	pair<double, double> temp = writeResult(box, results, distances);
-	std::cout << temp.first << endl << temp.second << endl;
-	waitKey();
+	//vector<captcha> box = getCaptcha(Path);
+	//vector<string> results = fitCaptchaResult(box);
+	//vector<int> distances = fitLevenshteinDistance(box, results);
+	//pair<double, double> temp = writeResult(box, results, distances);
+	//std::cout << temp.first << endl << temp.second << endl;
+	//waitKey();
+
+	vector<captcha> box = getCaptcha(MYDIRECTORY, "jpeg|jpg|png");
+	for (unsigned int i = 0; i < box.size(); ++i)
+	{
+		BlueAlgorithm rec;
+		imshow("show", box[i].first);
+		cout << rec.Recognize(box[i].first) << endl;
+		waitKey();
+		destroyWindow("show");
+	}
+
 	return 0;
 }

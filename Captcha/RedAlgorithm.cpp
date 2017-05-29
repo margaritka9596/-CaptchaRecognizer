@@ -171,7 +171,7 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 	vector<Mat> FinalSegments;
 	int averageSegWidth = outputImg.cols / 5;
 
-	for (int i = 0; i < Segments.size(); ++i)
+	for (unsigned int i = 0; i < Segments.size(); ++i)
 	{
 		Mat curSeg = Segments[i];
 		if ((curSeg.cols > averageSegWidth / 4) && (curSeg.rows > averageSegWidth / 4))
@@ -198,7 +198,7 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 	PreprocessingForNeuronNet obj;
 	FinalSegments = obj.ResizeAndChangeBackground(FinalSegments);
 
-	for (int i = 0; i < FinalSegments.size(); ++i)
+	for (unsigned int i = 0; i < FinalSegments.size(); ++i)
 	{
 		//imshow("FinalsegResized" + i, FinalSegments[i]);
 		string ext = ".jpg";

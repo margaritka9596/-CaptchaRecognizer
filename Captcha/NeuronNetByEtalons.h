@@ -1,7 +1,11 @@
 #include "Captcha.h"
 
+typedef pair<Mat, string> captcha;
+
 class NeuronNetByEtalons
 {
 public:
-	string recognizeSegments(string algoritmName, vector<Mat> segments);
+	static string recognizeSegments(vector<Mat> segments, string algoritmName);
 };
+
+vector<captcha> getCaptcha(string path, string ext);

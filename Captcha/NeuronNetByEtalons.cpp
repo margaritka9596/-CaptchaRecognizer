@@ -3,14 +3,43 @@
 
 //numberOfClasses & numberOfComponents
 int M, N;
-vector<Mat> etalons;
-vector<string> labels;
+vector<captcha> etalons;
 //input signal
 vector<int> X;
 vector<double> W;
 Mat experimentBitmap;
-string path = "C:\\Users\\Margo\\Desktop\\Mine\\Study\\m1_1\\2_term\\image processing\\CaptchaRecognizer\\Captcha\\ForNeuronNet";
+string path = "ForNeuronNet";
 /*static string pathWMatrix = Application.StartupPath + "W_array.txt";*/
+
+vector<captcha> getCaptcha(string path, string ext) {
+	vector<captcha> box;
+
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir(path.c_str())) != NULL) {
+		ent = readdir(dir);
+		ent = readdir(dir);
+		while ((ent = readdir(dir)) != NULL) {
+			string filename = ent->d_name;
+			string value = filename.substr(0, filename.find('.'));
+			string extension = filename.substr(filename.find('.') + 1, filename.length() - filename.find('.') - 1);
+			if (ext.find(extension) != string::npos)
+			{
+				Mat image = imread(path + filename, CV_LOAD_IMAGE_COLOR);
+				if (image.data)
+				{
+					pair<Mat, string> temp(image, value);
+					box.push_back(temp);
+				}
+			}
+		}
+		closedir(dir);
+	}
+	else
+		perror("");
+
+	return box;
+}
 
 ///TODO 
 //)color?
@@ -18,9 +47,6 @@ string path = "C:\\Users\\Margo\\Desktop\\Mine\\Study\\m1_1\\2_term\\image proce
 vector<int> binarizeBitmap(Mat image)
 {
 	//задаем значение
-
-	/*imshow("trouble", image);
-	waitKey();*/
 
 	//TODO
 	double backgroundColor = 255.0;
@@ -69,32 +95,7 @@ double activationFunc(double x)
 
 void uploadEtalons(string srcPath, string algorithmName) //algorithmName - lowcase(ex: red, blue)
 {
-	string pathToEtalons = srcPath + "\\" + algorithmName + "\\etalons\\";
-	const char* pathToEtalonsChar = pathToEtalons.c_str();
-
-	DIR *dir;
-	struct dirent *ent;
-	if ((dir = opendir(pathToEtalonsChar)) != NULL) {
-		ent = readdir(dir);
-		ent = readdir(dir);
-		while ((ent = readdir(dir)) != NULL) {
-			string filename = ent->d_name;
-			string label = filename.substr(0, filename.find('.'));
-			Mat image = imread(pathToEtalonsChar + filename, CV_LOAD_IMAGE_GRAYSCALE);
-
-			string extension = filename.substr(filename.find('.'), filename.length());
-			if (extension == ".jpg")
-			{
-				//добавили все эталонные изображения в vector<Mat>
-				etalons.push_back(image);
-				//labels - метки в названиях файлов с эталонами. Будут выводиться в качестве названия класса
-				labels.push_back(label);
-			}
-		}
-		closedir(dir);
-	}
-	else
-		perror("");
+	etalons = getCaptcha(srcPath + "\\" + algorithmName + "\\etalons\\", "jpg|jpeg|png");
 }
 
 void trainNet()
@@ -104,10 +105,10 @@ void trainNet()
 	vector<int> el;
 
 	//create matrix
-	for (int i = 0; i < etalons.size(); ++i)
+	for (unsigned int i = 0; i < etalons.size(); ++i)
 	{
-		el.swap(binarizeBitmap(etalons[i]));
-		for (int i = 0; i < el.size(); ++i)
+		el.swap(binarizeBitmap(etalons[i].first));
+		for (unsigned int i = 0; i < el.size(); ++i)
 			X.push_back(el[i]);
 	}
 
@@ -121,7 +122,8 @@ void trainNet()
 
 	//TODO
 	//1)запись в файл
-	/*using (StreamWriter writer = new StreamWriter(File.Open(pathWMatrix + "", FileMode.Create))) //"C:/Users/Margo/Desktop/WindowsFormsApplication1/res/W_array.txt"
+	/*
+	using (StreamWriter writer = new StreamWriter(File.Open(pathWMatrix + "", FileMode.Create))) //"C:/Users/Margo/Desktop/WindowsFormsApplication1/res/W_array.txt"
 	{
 		for (int j = 0; j < M; ++j)
 		{
@@ -130,7 +132,8 @@ void trainNet()
 				writer.Write(W[j * N + i]);
 			writer.Write("\n");
 		}
-	}*/
+	}
+	*/
 
 	string message = "Net is ready.";
 	cout << message << endl;
@@ -142,7 +145,7 @@ string testNet(Mat inputImg)
 	
 	///
 	int numOne = 0;
-	for (int i = 0; i < experiment.size(); ++i)
+	for (unsigned int i = 0; i < experiment.size(); ++i)
 	{
 		if (experiment[i] != 0)
 			++numOne;
@@ -219,29 +222,24 @@ string testNet(Mat inputImg)
 	if (classNum == -2)
 		message = "Net can't determine the class of experiment object =(";
 	else
-		message = "Class number is " + labels[classNum] + " ! =)";
+		message = "Class number is " + etalons[classNum].second + " ! =)";
 	
 	cout << message << endl;
 
-	return labels[classNum];
+	return etalons[classNum].second;
 }
 
-string NeuronNetByEtalons::recognizeSegments(string algoritmName, vector<Mat> segments)
+string NeuronNetByEtalons::recognizeSegments(vector<Mat> segments, string algoritmName)
 {
-	string predictedValue;
+	string predictedValue = "";
 
 	uploadEtalons(path, algoritmName);
 	trainNet();
 
-
-	cout << "___________________test__________________" << endl;
-	for (int i = 0; i < segments.size(); ++i)
+	for (unsigned int i = 0; i < segments.size(); ++i)
 	{
-		//imshow("", segments[i]);
-		//waitKey();
-		//destroyWindow("");
-
 		predictedValue += testNet(segments[i]);
 	}
+
 	return predictedValue;
 }
