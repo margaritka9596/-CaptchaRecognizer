@@ -1,6 +1,7 @@
 #include "Classes.h"
 
 #define MYDIRECTORY "trainset\\blue\\trainset\\"
+#define Path "trainset\\blue\\testset\\"
 
 int min(int a, int b, int c) {
 	if (a < b)
@@ -57,7 +58,7 @@ std::string getexepath()
 */
 
 string captchaRecognize(Mat image) {
-	//return "-";
+	/*
 	int flag = 0;
 	vector<Mat> result;
 	vector<Mat> result1;
@@ -113,12 +114,15 @@ string captchaRecognize(Mat image) {
 		return "-";
 		break;
 	} 
+	*/
+	BlueAlgorithm blue;
+	return blue.Recognize(image);
 }
 
 vector<string> fitCaptchaResult(vector<captcha> box) {
 	vector<string> result(box.size());
-	//int endI = box.size();
-	int endI = 1;
+	int endI = box.size();
+	//int endI = 1;
 
 	for (int i = 0; i < endI; ++i) {
 		result[i] = captchaRecognize(box[i].first);
@@ -143,7 +147,7 @@ pair<double, double> writeResult(vector<captcha> box, vector<string> results, ve
 	}
 	avg /= box.size();
 	accuracy /= box.size();
-	fout << endl << avg << endl << accuracy << endl;
+	fout << endl << avg << endl << accuracy * 100 << "%" << endl;
 	fout.close();
 	return pair<double, double>(avg, accuracy);
 }
@@ -161,22 +165,21 @@ int main(int argc, char* argv[])
 	//string redTrainsetPath = src + "\\Captcha\\trainset\\red\\trainset\\";
 	//const char* Path = redTrainsetPath.c_str();
 
-	//vector<captcha> box = getCaptcha(Path);
-	//vector<string> results = fitCaptchaResult(box);
-	//vector<int> distances = fitLevenshteinDistance(box, results);
-	//pair<double, double> temp = writeResult(box, results, distances);
-	//std::cout << temp.first << endl << temp.second << endl;
-	//waitKey();
+	vector<captcha> box = getCaptcha(Path, "jpg|jpeg|png");
+	vector<string> results = fitCaptchaResult(box);
+	vector<int> distances = fitLevenshteinDistance(box, results);
+	pair<double, double> temp = writeResult(box, results, distances);
+	std::cout << temp.first << endl << temp.second << endl;
 
-	vector<captcha> box = getCaptcha(MYDIRECTORY, "jpeg|jpg|png");
-	for (unsigned int i = 0; i < box.size(); ++i)
-	{
-		BlueAlgorithm rec;
-		imshow("show", box[i].first);
-		cout << rec.Recognize(box[i].first) << endl;
-		waitKey();
-		destroyWindow("show");
-	}
+	//vector<captcha> box = getCaptcha(MYDIRECTORY, "jpeg|jpg|png");
+	//for (unsigned int i = 0; i < box.size(); ++i)
+	//{
+	//	BlueAlgorithm rec;
+	//	imshow("show", box[i].first);
+	//	cout << rec.Recognize(box[i].first) << endl;
+	//	waitKey();
+	//	destroyWindow("show");
+	//}
 
 	return 0;
 }

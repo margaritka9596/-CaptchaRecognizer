@@ -4,10 +4,10 @@
 //numberOfClasses & numberOfComponents
 int M, N;
 vector<captcha> etalons;
+vector<int> ellipseCounts;
 //input signal
 vector<int> X;
 vector<double> W;
-Mat experimentBitmap;
 string path = "ForNeuronNet";
 /*static string pathWMatrix = Application.StartupPath + "W_array.txt";*/
 
@@ -96,6 +96,12 @@ double activationFunc(double x)
 void uploadEtalons(string srcPath, string algorithmName) //algorithmName - lowcase(ex: red, blue)
 {
 	etalons = getCaptcha(srcPath + "\\" + algorithmName + "\\etalons\\", "jpg|jpeg|png");
+	ellipseCounts.resize(etalons.size());
+	for (unsigned int i = 0; i < etalons.size(); ++i)
+	{
+		cvtColor(etalons[i].first, etalons[i].first, CV_BGR2GRAY);
+		ellipseCounts[i] = getEllipseCount(etalons[i].first);
+	}
 }
 
 void trainNet()
@@ -136,11 +142,13 @@ void trainNet()
 	*/
 
 	string message = "Net is ready.";
-	cout << message << endl;
+	//cout << message << endl;
 }
 
 string testNet(Mat inputImg)
 {
+	int ellipseCount = getEllipseCount(inputImg);
+
 	vector<int> experiment = binarizeBitmap(inputImg);
 	
 	///
@@ -207,16 +215,17 @@ string testNet(Mat inputImg)
 	int classNum = -1;
 	for (int k = 0; k < M; ++k)
 	{
-		if (y2_next[k] > max)
-		{
-			max = y2_next[k];
-			classNum = k;
-		}
-		else
-		{
-			if (y2_next[k] == max)
-				classNum = -2;
-		}
+		if (ellipseCount == ellipseCounts[k] || ellipseCount > 2)
+			if (y2_next[k] > max)
+			{
+				max = y2_next[k];
+				classNum = k;
+			}
+			else
+			{
+				if (y2_next[k] == max)
+					classNum = -2;
+			}
 	}
 	string message;
 	if (classNum == -2)
@@ -224,7 +233,7 @@ string testNet(Mat inputImg)
 	else
 		message = "Class number is " + etalons[classNum].second + " ! =)";
 	
-	cout << message << endl;
+	//cout << message << endl;
 
 	return etalons[classNum].second;
 }

@@ -1,5 +1,7 @@
 #include "Captcha.h"
 
+int getEllipseCount(Mat inputImg);
+
 class BlueAlgorithm
 {
 public:

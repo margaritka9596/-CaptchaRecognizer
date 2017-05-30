@@ -1,6 +1,35 @@
 #include "Captcha.h"
 #include "Classes.h"
 
+int getEllipseCount(Mat inputImg)
+{
+	Mat img;
+	if (inputImg.channels() != 1)
+		cvtColor(inputImg, img, CV_BGR2GRAY);
+	else
+		inputImg.copyTo(img);
+
+	Mat image(img.rows + 2, img.cols + 2, img.type(), Scalar::all(255));
+	img.copyTo(image(Rect(1, 1, img.cols, img.rows)));
+
+	threshold(image, image, 128, 255, CV_THRESH_BINARY);
+	cvtColor(image, image, CV_GRAY2BGR);
+
+	int count = -1;
+	for (int x = 0; x < image.rows; ++x)
+		for (int y = 0; y < image.cols; ++y)
+		{
+			Vec3b color = image.at<Vec3b>(x, y);
+			if (color[0] == 255 && color[1] == 255 && color[2] == 255)
+			{
+				floodFill(image, Point(y, x), CV_RGB(255, 0, 0));
+				++count;
+			}
+		}
+
+	return count;
+}
+
 Mat BlueAlgorithm::Preprocessing(Mat inputImg)
 {
 	Mat image, HSV, colorImage;
