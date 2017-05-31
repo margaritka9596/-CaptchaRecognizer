@@ -1,6 +1,8 @@
 #include "Captcha.h"
 #include "Classes.h"
 
+int i = 0;
+
 int getEllipseCount(Mat inputImg)
 {
 	Mat img;
@@ -30,7 +32,98 @@ int getEllipseCount(Mat inputImg)
 	return count;
 }
 
-Mat BlueAlgorithm::Preprocessing(Mat inputImg)
+
+bool topEllipse(Mat inputImg)
+{
+	Mat img;
+	if (inputImg.channels() != 1)
+		cvtColor(inputImg, img, CV_BGR2GRAY);
+	else
+		inputImg.copyTo(img);
+
+	Mat image(img.rows + 2, img.cols + 2, img.type(), Scalar::all(255));
+	img.copyTo(image(Rect(1, 1, img.cols, img.rows)));
+
+	threshold(image, image, 128, 255, CV_THRESH_BINARY);
+	cvtColor(image, image, CV_GRAY2BGR);
+
+	bool fl = false;
+	int count = -1;
+	for (int x = 0; x < image.rows; ++x)
+		for (int y = 0; y < image.cols; ++y)
+		{
+			Vec3b color = image.at<Vec3b>(x, y);
+			if (color[0] == 255 && color[1] == 255 && color[2] == 255)
+			{
+				if (count == 0 && x < image.rows * 4 / 10)
+					fl = true;
+				floodFill(image, Point(y, x), CV_RGB(255, 0, 0));
+				++count;
+			}
+		}
+
+	return fl;
+}
+
+bool bottomEllipse(Mat inputImg)
+{
+	Mat img;
+	if (inputImg.channels() != 1)
+		cvtColor(inputImg, img, CV_BGR2GRAY);
+	else
+		inputImg.copyTo(img);
+
+	Mat image(img.rows + 2, img.cols + 2, img.type(), Scalar::all(255));
+	img.copyTo(image(Rect(1, 1, img.cols, img.rows)));
+
+	threshold(image, image, 128, 255, CV_THRESH_BINARY);
+	cvtColor(image, image, CV_GRAY2BGR);
+
+	bool fl = false;
+	int count = -1;
+	for (int x = image.rows - 1; x >= 0; --x)
+		for (int y = 0; y < image.cols; ++y)
+		{
+			Vec3b color = image.at<Vec3b>(x, y);
+			if (color[0] == 255 && color[1] == 255 && color[2] == 255)
+			{
+				if (count == 0 && x > image.rows * 7 / 10)
+					fl = true;
+				floodFill(image, Point(y, x), CV_RGB(255, 0, 0));
+				++count;
+			}
+		}
+
+	return fl;
+}
+
+//bool canBeOne(Mat inputImg)
+//{
+//	Mat image;
+//	if (inputImg.channels() != 1)
+//		cvtColor(inputImg, image, CV_BGR2GRAY);
+//	else
+//		inputImg.copyTo(image);
+//
+//	threshold(image, image, 128, 255, CV_THRESH_BINARY);
+//
+//	int min = image.cols, max = 0;
+//	for (int x = 0; x < image.rows; ++x)
+//	{
+//		int count = 0;
+//		for (int y = 0; y < image.cols; ++y)
+//			if (image.at<uchar>(x, y) == 0)
+//				++count;
+//		if (count < min)
+//			min = count;
+//		if (count > max)
+//			max = count;
+//	}
+//
+//	return (double)max / (double)min < 2.0;
+//}
+
+Mat BlueAlgorithm::preprocessing(Mat inputImg)
 {
 	Mat image, HSV, colorImage;
 
@@ -39,7 +132,7 @@ Mat BlueAlgorithm::Preprocessing(Mat inputImg)
 	for (int x = 0; x < image.rows; x++) {
 		for (int y = 0; y < image.cols; y++) {
 			Vec3b hsv = HSV.at<Vec3b>(x, y);
-			if (hsv[2] < 140)
+			if (hsv[2] < 135)
 				image.at<Vec3b>(x, y) = Vec3b(255, 255, 255);
 			else
 				image.at<Vec3b>(x, y) = Vec3b(0, 0, 0);
@@ -64,7 +157,7 @@ Mat BlueAlgorithm::Preprocessing(Mat inputImg)
 	return colorImage;
 }
 
-vector<Mat> BlueAlgorithm::Segmentate(Mat inputImg)
+vector<Mat> BlueAlgorithm::segmentate(Mat inputImg)
 {
 	Mat image, imageWithComponents, HSV;
 	inputImg.copyTo(image);
@@ -121,7 +214,13 @@ vector<Mat> BlueAlgorithm::Segmentate(Mat inputImg)
 		warpAffine(segment, segment, rot_mat, segment.size());
 		/* ------ */
 		resize(segment, segment, Size(118, 227));
-		threshold(segment, segment, 30, 255, CV_THRESH_BINARY_INV);
+		threshold(segment, segment, 50, 255, CV_THRESH_BINARY_INV);
+
+		//imshow("show", segment); waitKey(); destroyWindow("show");
+
+		Mat element = getStructuringElement(MORPH_ELLIPSE, Size(5, 5), Point(2, 2));
+		erode(segment, segment, element);
+		dilate(segment, segment, element);
 
 		segments.push_back(segment);
 	}
@@ -129,12 +228,32 @@ vector<Mat> BlueAlgorithm::Segmentate(Mat inputImg)
 	return segments;
 }
 
-string BlueAlgorithm::RecognizeSegments(vector<Mat> segments)
+string BlueAlgorithm::recognizeSegments(vector<Mat> segments)
 {
+	//string res = "";
+	//for (unsigned int i = 0; i < segments.size(); ++i)
+	//{
+	//	Mat image = segments[i];
+	//	int ellipseCount = getEllipseCount(image);
+	//	bool isTopEllipse = topEllipse(image);
+	//	bool isBottomEllipse = bottomEllipse(image);
+	//	bool isOne = canBeOne(image);
+	//	if (ellipseCount == 2)
+	//		res += "8";
+	//	else if (ellipseCount == 1 && !isTopEllipse)
+	//		res += "6";
+	//	else if (ellipseCount == 1 && isTopEllipse && isBottomEllipse)
+	//		res += "0";
+	//	else if (ellipseCount == 0 && isOne)
+	//		res += "1";
+	//	else
+	//		res += "-";
+	//}
+	//return res;
 	return NeuronNetByEtalons::recognizeSegments(segments, "blue");
 }
 
-string BlueAlgorithm::Recognize(Mat inputImg)
+string BlueAlgorithm::recognize(Mat inputImg)
 {
-	return RecognizeSegments(Segmentate(Preprocessing(inputImg)));
+	return recognizeSegments(segmentate(preprocessing(inputImg)));
 }

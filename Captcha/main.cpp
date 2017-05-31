@@ -57,7 +57,7 @@ std::string getexepath()
 }
 */
 
-string captchaRecognize(Mat image) {
+string captchaRecognize(Mat image, string algorithmType) {
 	/*
 	int flag = 0;
 	vector<Mat> result;
@@ -116,7 +116,7 @@ string captchaRecognize(Mat image) {
 	} 
 	*/
 	BlueAlgorithm blue;
-	return blue.Recognize(image);
+	return blue.recognize(image);
 }
 
 vector<string> fitCaptchaResult(vector<captcha> box) {
@@ -125,7 +125,7 @@ vector<string> fitCaptchaResult(vector<captcha> box) {
 	//int endI = 1;
 
 	for (int i = 0; i < endI; ++i) {
-		result[i] = captchaRecognize(box[i].first);
+		result[i] = captchaRecognize(box[i].first, "");
 	}
 	return result;
 }
@@ -170,16 +170,6 @@ int main(int argc, char* argv[])
 	vector<int> distances = fitLevenshteinDistance(box, results);
 	pair<double, double> temp = writeResult(box, results, distances);
 	std::cout << temp.first << endl << temp.second << endl;
-
-	//vector<captcha> box = getCaptcha(MYDIRECTORY, "jpeg|jpg|png");
-	//for (unsigned int i = 0; i < box.size(); ++i)
-	//{
-	//	BlueAlgorithm rec;
-	//	imshow("show", box[i].first);
-	//	cout << rec.Recognize(box[i].first) << endl;
-	//	waitKey();
-	//	destroyWindow("show");
-	//}
 
 	return 0;
 }

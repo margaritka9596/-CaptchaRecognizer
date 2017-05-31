@@ -4,7 +4,12 @@
 //numberOfClasses & numberOfComponents
 int M, N;
 vector<captcha> etalons;
+
 vector<int> ellipseCounts;
+vector<bool> areTopEllipses;
+vector<bool> areBottomEllipses;
+//vector<bool> areOne;
+
 //input signal
 vector<int> X;
 vector<double> W;
@@ -96,11 +101,17 @@ double activationFunc(double x)
 void uploadEtalons(string srcPath, string algorithmName) //algorithmName - lowcase(ex: red, blue)
 {
 	etalons = getCaptcha(srcPath + "\\" + algorithmName + "\\etalons\\", "jpg|jpeg|png");
-	ellipseCounts.resize(etalons.size());
+	ellipseCounts.resize(etalons.size()); 
+	areTopEllipses.resize(etalons.size()); 
+	areBottomEllipses.resize(etalons.size());
+	//areOne.resize(etalons.size());
 	for (unsigned int i = 0; i < etalons.size(); ++i)
 	{
 		cvtColor(etalons[i].first, etalons[i].first, CV_BGR2GRAY);
 		ellipseCounts[i] = getEllipseCount(etalons[i].first);
+		areTopEllipses[i] = topEllipse(etalons[i].first);
+		areBottomEllipses[i] = bottomEllipse(etalons[i].first);
+		//areOne[i] = canBeOne(etalons[i].first);
 	}
 }
 
@@ -148,6 +159,9 @@ void trainNet()
 string testNet(Mat inputImg)
 {
 	int ellipseCount = getEllipseCount(inputImg);
+	bool isTopEllipse = topEllipse(inputImg);
+	bool isBottomEllipse = bottomEllipse(inputImg);
+	//bool isOne = canBeOne(inputImg);
 
 	vector<int> experiment = binarizeBitmap(inputImg);
 	
@@ -215,7 +229,9 @@ string testNet(Mat inputImg)
 	int classNum = -1;
 	for (int k = 0; k < M; ++k)
 	{
-		if (ellipseCount == ellipseCounts[k] || ellipseCount > 2)
+		if (ellipseCount == ellipseCounts[k] && 
+			isTopEllipse == areTopEllipses[k] && 
+			isBottomEllipse == areBottomEllipses[k])
 			if (y2_next[k] > max)
 			{
 				max = y2_next[k];
@@ -229,10 +245,20 @@ string testNet(Mat inputImg)
 	}
 	string message;
 	if (classNum == -2)
+	{
 		message = "Net can't determine the class of experiment object =(";
+		return "=";
+	}
+	else if (classNum == -1)
+	{
+		//imshow("show", inputImg); waitKey(); destroyWindow("show");
+
+		message = "Net can't determine the class of experiment object =(";
+		return "-";
+	}
 	else
 		message = "Class number is " + etalons[classNum].second + " ! =)";
-	
+
 	//cout << message << endl;
 
 	return etalons[classNum].second;

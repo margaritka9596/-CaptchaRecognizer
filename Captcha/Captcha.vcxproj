@@ -167,6 +167,18 @@
     <ClInclude Include="PreprocessingForNeuronNet.h" />
     <ClInclude Include="RedAlgorithm.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="0.jpg" />
+    <Image Include="1.jpg" />
+    <Image Include="2.jpg" />
+    <Image Include="3.jpg" />
+    <Image Include="4.jpg" />
+    <Image Include="5.jpg" />
+    <Image Include="6.jpg" />
+    <Image Include="7.jpg" />
+    <Image Include="8.jpg" />
+    <Image Include="9.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,12 +1,14 @@
 #include "Captcha.h"
 
 int getEllipseCount(Mat inputImg);
+bool topEllipse(Mat inputImg);
+bool bottomEllipse(Mat inputImg);
 
 class BlueAlgorithm
 {
 public:
-	Mat Preprocessing(Mat inputImg);
-	vector<Mat> Segmentate(Mat inputImg);
-	string RecognizeSegments(vector<Mat> segments);
-	string Recognize(Mat segments);
+	Mat preprocessing(Mat inputImg);
+	vector<Mat> segmentate(Mat inputImg);
+	string recognizeSegments(vector<Mat> segments);
+	string recognize(Mat inputImg);
 };

@@ -51,4 +51,36 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="0.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="1.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="2.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="3.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="4.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="5.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="6.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="7.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="8.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="9.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
