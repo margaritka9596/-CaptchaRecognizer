@@ -117,6 +117,7 @@ string captchaRecognize(Mat image, string algorithmName) {
 	{
 		RedAlgorithm recognizer;
 		res = recognizer.recognize(image);
+		//std::cout << "res = " << res << endl;
 	}
 	else
 	{
@@ -129,7 +130,7 @@ string captchaRecognize(Mat image, string algorithmName) {
 vector<string> fitCaptchaResult(vector<captcha> box, string algorithmName) {
 	vector<string> result(box.size());
 	int endI = box.size();
-	//int endI = 1;
+	//int endI = 43;
 
 	for (int i = 0; i < endI; ++i) {
 		//cout << box[i].second << " ";
@@ -158,7 +159,7 @@ pair<double, double> writeResult(vector<captcha> box, vector<string> results, ve
 	accuracy /= box.size();
 	fout << endl << avg << endl << accuracy * 100 << "%" << endl;
 	fout.close();
-	return pair<double, double>(avg, accuracy);
+	return pair<double, double>(avg, accuracy * 100);
 }
 
 int main(int argc, char* argv[])

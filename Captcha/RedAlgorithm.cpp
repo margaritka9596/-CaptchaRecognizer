@@ -96,6 +96,7 @@ Mat RedAlgorithm::preprocessing(Mat inputImg)
 			}
 
 	//imshow("1", outputImg);
+	waitKey();
 	//imwrite("outputImgSegmented.jpg", outputImg);
 
 	return outputImg;
@@ -110,8 +111,8 @@ vector<Mat> RedAlgorithm::segmentate(Mat img)
 	Mat imageWithComponents;
 	image.copyTo(imageWithComponents);
 	unsigned int cnt = 0;
-	for (int x = 0; x < imageWithComponents.rows; ++x)
-		for (int y = 0; y < imageWithComponents.cols; ++y)
+	for (int y = 0; y < imageWithComponents.cols; ++y)
+		for (int x = 0; x < imageWithComponents.rows; ++x)
 		{
 			Vec3b color = imageWithComponents.at<Vec3b>(x, y);
 			if (color[0] == 255 && color[1] == 255 && color[2] == 255)
@@ -154,11 +155,13 @@ vector<Mat> RedAlgorithm::segmentate(Mat img)
 		segments.push_back(segment);
 	}
 
-/*	for (int i = 0; i < segments.size(); ++i)
+	/*for (int i = 0; i < segments.size(); ++i)
 	{
 		imshow("seg"+ i, segments[i]);
+		waitKey();
 	} 
-*/	//cout << "size before filter" << Segments.size() << endl;
+	
+	cout << "size before filter" << segments.size() << endl;*/
 
 	//фильтрация и коррекция сегментов
 	vector<Mat> FinalSegments;
@@ -183,6 +186,13 @@ vector<Mat> RedAlgorithm::segmentate(Mat img)
 		}
 	}
 
+	/*cout << "After filter" << endl;
+	for (int i = 0; i < FinalSegments.size(); ++i)
+	{
+		imshow("fseg" + i, FinalSegments[i]);
+		waitKey();
+	}*/
+
 	for (unsigned int i = 0; i < FinalSegments.size(); ++i)
 	{
 		Mat temp;
@@ -196,10 +206,10 @@ vector<Mat> RedAlgorithm::segmentate(Mat img)
 
 		//imshow("Finalseg" + to_string(i), FinalSegments[i]); waitKey(); destroyWindow("Finalseg" + to_string(i));
 
-		string ext = ".jpg";
+		/*string ext = ".jpg";
 		string z = "try\\SegmentNum_" + to_string(i) + ext;
 		const char* z1 = z.c_str();
-		//imwrite(z1, FinalSegments[i]);
+		imwrite(z1, FinalSegments[i]);*/
 	}
 	//cout << "size after filter" << FinalSegments.size() << endl;
 

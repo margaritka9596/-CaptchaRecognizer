@@ -6,9 +6,6 @@ int M, N;
 
 /*static string pathWMatrix = Application.StartupPath + "W_array.txt";*/
 
-///TODO 
-//)color?
-//какая-то хуйня творится, binarized весь в нулях 
 vector<int> toVector(Mat image)
 {
 	//TODO

@@ -32,7 +32,6 @@ int getEllipseCount(Mat inputImg)
 	return count;
 }
 
-
 bool topEllipse(Mat inputImg)
 {
 	Mat img;
