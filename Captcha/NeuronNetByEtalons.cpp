@@ -3,58 +3,16 @@
 
 //numberOfClasses & numberOfComponents
 int M, N;
-vector<captcha> etalons;
 
-vector<int> ellipseCounts;
-vector<bool> areTopEllipses;
-vector<bool> areBottomEllipses;
-//vector<bool> areOne;
-
-//input signal
-vector<int> X;
-vector<double> W;
-string path = "ForNeuronNet";
 /*static string pathWMatrix = Application.StartupPath + "W_array.txt";*/
-
-vector<captcha> getCaptcha(string path, string ext) {
-	vector<captcha> box;
-
-	DIR *dir;
-	struct dirent *ent;
-	if ((dir = opendir(path.c_str())) != NULL) {
-		ent = readdir(dir);
-		ent = readdir(dir);
-		while ((ent = readdir(dir)) != NULL) {
-			string filename = ent->d_name;
-			string value = filename.substr(0, filename.find('.'));
-			string extension = filename.substr(filename.find('.') + 1, filename.length() - filename.find('.') - 1);
-			if (ext.find(extension) != string::npos)
-			{
-				Mat image = imread(path + filename, CV_LOAD_IMAGE_COLOR);
-				if (image.data)
-				{
-					pair<Mat, string> temp(image, value);
-					box.push_back(temp);
-				}
-			}
-		}
-		closedir(dir);
-	}
-	else
-		perror("");
-
-	return box;
-}
 
 ///TODO 
 //)color?
 //какая-то хуйня творится, binarized весь в нулях 
-vector<int> binarizeBitmap(Mat image)
+vector<int> toVector(Mat image)
 {
-	//задаем значение
-
 	//TODO
-	double backgroundColor = 255.0;
+	double backgroundColor = 128.0;
 
 	//бинаризация
 	int h = image.rows;
@@ -98,33 +56,26 @@ double activationFunc(double x)
 	return res;
 }
 
-void uploadEtalons(string srcPath, string algorithmName) //algorithmName - lowcase(ex: red, blue)
+vector<captcha> uploadEtalons(string srcPath, string algorithmName) //algorithmName - lowcase(ex: red, blue)
 {
-	etalons = getCaptcha(srcPath + "\\" + algorithmName + "\\etalons\\", "jpg|jpeg|png");
-	ellipseCounts.resize(etalons.size()); 
-	areTopEllipses.resize(etalons.size()); 
-	areBottomEllipses.resize(etalons.size());
-	//areOne.resize(etalons.size());
+	vector<captcha> etalons = getCaptcha(srcPath + algorithmName + "\\etalons\\", "jpg|jpeg|png");
 	for (unsigned int i = 0; i < etalons.size(); ++i)
-	{
 		cvtColor(etalons[i].first, etalons[i].first, CV_BGR2GRAY);
-		ellipseCounts[i] = getEllipseCount(etalons[i].first);
-		areTopEllipses[i] = topEllipse(etalons[i].first);
-		areBottomEllipses[i] = bottomEllipse(etalons[i].first);
-		//areOne[i] = canBeOne(etalons[i].first);
-	}
+
+	return etalons;
 }
 
-void trainNet()
+vector<double> trainNet(vector<captcha> etalons)
 {
 	//numberOfClasses
 	M = etalons.size();
 	vector<int> el;
 
 	//create matrix
+	vector<int> X;
 	for (unsigned int i = 0; i < etalons.size(); ++i)
 	{
-		el.swap(binarizeBitmap(etalons[i].first));
+		el.swap(toVector(etalons[i].first));
 		for (unsigned int i = 0; i < el.size(); ++i)
 			X.push_back(el[i]);
 	}
@@ -133,6 +84,7 @@ void trainNet()
 	N = el.size();
 
 	//Create matrix W
+	vector<double> W;
 	for (int j = 0; j < M; ++j)
 		for (int i = 0; i < N; ++i)
 			W.push_back((1 / (2.0)) * X[j * N + i]);
@@ -154,16 +106,33 @@ void trainNet()
 
 	string message = "Net is ready.";
 	//cout << message << endl;
+
+	return W;
 }
 
-string testNet(Mat inputImg)
+string testNet(Mat inputImg, vector<captcha> etalons, vector<double> W, string algorithmName)
 {
 	int ellipseCount = getEllipseCount(inputImg);
 	bool isTopEllipse = topEllipse(inputImg);
 	bool isBottomEllipse = bottomEllipse(inputImg);
+
+	vector<bool> possibleEtalon(etalons.size());
+	for (unsigned int i = 0; i < possibleEtalon.size(); ++i)
+	{
+		if (algorithmName == "blue")
+			possibleEtalon[i] = (
+				ellipseCount == getEllipseCount(etalons[i].first) &&
+				isTopEllipse == topEllipse(etalons[i].first) &&
+				isBottomEllipse == bottomEllipse(etalons[i].first)
+			);
+		else
+			possibleEtalon[i] = true;
+	}
+	//imshow("show", inputImg); waitKey(); destroyWindow("show");
+
 	//bool isOne = canBeOne(inputImg);
 
-	vector<int> experiment = binarizeBitmap(inputImg);
+	vector<int> experiment = toVector(inputImg);
 	
 	///
 	int numOne = 0;
@@ -229,9 +198,7 @@ string testNet(Mat inputImg)
 	int classNum = -1;
 	for (int k = 0; k < M; ++k)
 	{
-		if (ellipseCount == ellipseCounts[k] && 
-			isTopEllipse == areTopEllipses[k] && 
-			isBottomEllipse == areBottomEllipses[k])
+		if (possibleEtalon[k])
 			if (y2_next[k] > max)
 			{
 				max = y2_next[k];
@@ -268,12 +235,12 @@ string NeuronNetByEtalons::recognizeSegments(vector<Mat> segments, string algori
 {
 	string predictedValue = "";
 
-	uploadEtalons(path, algoritmName);
-	trainNet();
-
+	vector<captcha> etalons = uploadEtalons(ETALONSPATH, algoritmName);
+	vector<double> W = trainNet(etalons);
+	
 	for (unsigned int i = 0; i < segments.size(); ++i)
 	{
-		predictedValue += testNet(segments[i]);
+		predictedValue += testNet(segments[i], etalons, W, algoritmName);
 	}
 
 	return predictedValue;

@@ -52,8 +52,7 @@ vector<Mat> segmentate2_0(Mat img)
 		if (k == 0)
 			image.copyTo(imageForShowRect);
 		rectangle(imageForShowRect, rect, CV_RGB(255, 0, 0));
-		imshow("segmented", imageForShowRect);
-		///
+		//imshow("segmented", imageForShowRect); waitKey(); destroyWindow("segmented");
 
 		Mat segment;
 		image(rect).copyTo(segment);
@@ -63,7 +62,7 @@ vector<Mat> segmentate2_0(Mat img)
 	return segments;
 }
 
-vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
+vector<Mat> RedAlgorithm::preprocessing(Mat inputImg)
 {
 	Mat outputImg, mapX, mapY;
 	int rImgH = imgH * redFactor;
@@ -121,17 +120,17 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 	Mat tip_spacing1 = getStructuringElement(MORPH_ELLIPSE, Size(little_spaces, little_spaces), Point(-1, -1));
 
 	dilate(outputImg, outputImg, tip_spacing1);
-	//imshow("afterDilate", outputImg);
+	//imshow("afterDilate", outputImg); 
 
 	Mat tip_spacing2 = getStructuringElement(MORPH_ELLIPSE, Size(little_spaces + 1, little_spaces + 1), Point(-1, -1));
 	erode(outputImg, outputImg, tip_spacing1);
 	//imshow("afterErode", outputImg);
 
-	imwrite("outputImg.jpg", outputImg);
+	//imwrite("outputImg.jpg", outputImg);
 
 	//Разделение символов
-	cout << "InputImg|num cols = " << outputImg.cols << endl;
-	cout << "InputImg|num rows = " << outputImg.rows << endl;
+	//cout << "InputImg|num cols = " << outputImg.cols << endl;
+	//cout << "InputImg|num rows = " << outputImg.rows << endl;
 
 	vector<int> numWhitePixInCol(outputImg.cols);
 	for (int j = 0; j < outputImg.cols; ++j)
@@ -146,7 +145,7 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 	}
 
 	int maxHeightInPixels = *max_element(numWhitePixInCol.begin(), numWhitePixInCol.end());
-	cout << "max height of segment = " << maxHeightInPixels << endl;
+	//cout << "max height of segment = " << maxHeightInPixels << endl;
 	for (int j = 0; j < outputImg.cols; ++j)
 		if (numWhitePixInCol[j] >= 1 && numWhitePixInCol[j] <= maxHeightInPixels / 5)
 			for (int i = 0; i < outputImg.rows; ++i)
@@ -157,7 +156,7 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 			}
 
 	//imshow("1", outputImg);
-	imwrite("outputImgSegmented.jpg", outputImg);
+	//imwrite("outputImgSegmented.jpg", outputImg);
 
 	//сегментация
 	vector<Mat> Segments = segmentate2_0(outputImg);
@@ -165,7 +164,7 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 	{
 		imshow("seg"+ i, Segments[i]);
 	}*/
-	cout << "size before filter" << Segments.size() << endl;
+	//cout << "size before filter" << Segments.size() << endl;
 
 	//фильтрация и коррекция сегментов
 	vector<Mat> FinalSegments;
@@ -189,8 +188,8 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 				FinalSegments.push_back(curSeg);
 		}
 	}
-
-/*	for (int i = 0; i < FinalSegments.size(); ++i)
+/*
+	for (int i = 0; i < FinalSegments.size(); ++i)
 	{
 		imshow("Finalseg" + i, FinalSegments[i]);
 	}
@@ -204,9 +203,18 @@ vector<Mat> RedAlgorithm::Preprocessing(Mat inputImg)
 		string ext = ".jpg";
 		string z = "C:\\Users\\Margo\\Desktop\\try\\SegmentNum_" + to_string(i) + ext;
 		const char* z1 = z.c_str();
-		imwrite(z1, FinalSegments[i]);
+		//imwrite(z1, FinalSegments[i]);
 	}
-	cout << "size after filter" << FinalSegments.size() << endl;
-	
+	//cout << "size after filter" << FinalSegments.size() << endl;
 	return FinalSegments;
+}
+
+string RedAlgorithm::recognizeSegments(vector<Mat> segments)
+{
+	return NeuronNetByEtalons::recognizeSegments(segments, "red");
+}
+
+string RedAlgorithm::recognize(Mat inputImg)
+{
+	return recognizeSegments(preprocessing(inputImg));
 }

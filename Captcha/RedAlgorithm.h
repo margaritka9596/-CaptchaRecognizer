@@ -3,5 +3,7 @@
 class RedAlgorithm
 {
 public:
-	vector<Mat> Preprocessing(Mat inputImg);
+	vector<Mat> preprocessing(Mat inputImg);
+	string recognizeSegments(vector<Mat> segments);
+	string recognize(Mat inputImg);
 };

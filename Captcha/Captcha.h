@@ -8,9 +8,24 @@
 #include <cmath>
 #include <math.h>
 
-#define TEXTFILE "result.txt"
+#define TRAINSETPATH "trainset\\"
+#define ETALONSPATH "ForNeuronNet\\"
+#define TEXTFILENAME "result_"
 
 using namespace std;
 using namespace cv;
 
 typedef pair<Mat, string> captcha;
+
+vector<captcha> getCaptcha(string path, string ext);
+/*
+class Recognizer 
+{
+	Recognizer();
+	
+	virtual Mat preprocess(Mat);
+	virtual vector<Mat> segmentate(Mat);
+	virtual string recognizeSegment(Mat);
+	virtual string recognize(Mat);
+};
+*/

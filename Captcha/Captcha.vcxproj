@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlueAlgorithm.cpp" />
+    <ClCompile Include="Captcha.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NeuronNetByEtalons.cpp" />
     <ClCompile Include="PreprocessingForNeuronNet.cpp" />

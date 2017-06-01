@@ -1,8 +1,5 @@
 #include "Classes.h"
 
-#define MYDIRECTORY "trainset\\blue\\trainset\\"
-#define Path "trainset\\blue\\testset\\"
-
 int min(int a, int b, int c) {
 	if (a < b)
 		if (a < c) return a;
@@ -57,7 +54,7 @@ std::string getexepath()
 }
 */
 
-string captchaRecognize(Mat image, string algorithmType) {
+string captchaRecognize(Mat image, string algorithmName) {
 	/*
 	int flag = 0;
 	vector<Mat> result;
@@ -115,17 +112,29 @@ string captchaRecognize(Mat image, string algorithmType) {
 		break;
 	} 
 	*/
-	BlueAlgorithm blue;
-	return blue.recognize(image);
+	string res;
+	if (algorithmName == "red") 
+	{
+		RedAlgorithm recognizer;
+		res = recognizer.recognize(image);
+	}
+	else
+	{
+		BlueAlgorithm recognizer;
+		res = recognizer.recognize(image);
+	}
+	return res;
 }
 
-vector<string> fitCaptchaResult(vector<captcha> box) {
+vector<string> fitCaptchaResult(vector<captcha> box, string algorithmName) {
 	vector<string> result(box.size());
 	int endI = box.size();
 	//int endI = 1;
 
 	for (int i = 0; i < endI; ++i) {
-		result[i] = captchaRecognize(box[i].first, "");
+		//cout << box[i].second << " ";
+		result[i] = captchaRecognize(box[i].first, algorithmName);
+		//cout << result[i] << endl;
 	}
 	return result;
 }
@@ -137,8 +146,8 @@ vector<int> fitLevenshteinDistance(vector<captcha> box, vector<string> results) 
 	return result;
 }
 
-pair<double, double> writeResult(vector<captcha> box, vector<string> results, vector<int> distances) {
-	ofstream fout(TEXTFILE);
+pair<double, double> writeResult(vector<captcha> box, vector<string> results, vector<int> distances, string path) {
+	ofstream fout(path);
 	double avg = 0, accuracy = 0;
 	for (unsigned int i = 0; i < box.size(); ++i) {
 		fout << box[i].second << " " << results[i] << " " << getDiff(box[i].second, results[i]) << " " << distances[i] << endl;
@@ -154,22 +163,14 @@ pair<double, double> writeResult(vector<captcha> box, vector<string> results, ve
 
 int main(int argc, char* argv[])
 {
-	//string argv_str(argv[0]);
-	//string src = argv_str.substr(0, argv_str.find_last_of("\\"));
-	//src = src.substr(0, src.find_last_of("\\"));
-	//src = src.substr(0, src.find_last_of("\\"));
+	string algorithmName = "blue";
+	//cin >> algorithmName;
 
-	//std::cout << argv_str << endl;
-	//std::cout << src << endl;
-
-	//string redTrainsetPath = src + "\\Captcha\\trainset\\red\\trainset\\";
-	//const char* Path = redTrainsetPath.c_str();
-
-	vector<captcha> box = getCaptcha(Path, "jpg|jpeg|png");
-	vector<string> results = fitCaptchaResult(box);
+	vector<captcha> box = getCaptcha(TRAINSETPATH + algorithmName + "\\testset\\", "jpg|jpeg|png");
+	vector<string> results = fitCaptchaResult(box, algorithmName);
 	vector<int> distances = fitLevenshteinDistance(box, results);
-	pair<double, double> temp = writeResult(box, results, distances);
-	std::cout << temp.first << endl << temp.second << endl;
+	pair<double, double> temp = writeResult(box, results, distances, TEXTFILENAME + algorithmName + ".txt");
+	cout << temp.first << endl << temp.second << endl;
 
 	return 0;
 }
