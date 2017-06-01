@@ -30,3 +30,4 @@ vector<captcha> getCaptcha(string path, string ext) {
 
 	return box;
 }
+

@@ -4,7 +4,7 @@ int getEllipseCount(Mat inputImg);
 bool topEllipse(Mat inputImg);
 bool bottomEllipse(Mat inputImg);
 
-class BlueAlgorithm
+class BlueAlgorithm //: Recognizer
 {
 public:
 	Mat preprocessing(Mat inputImg);

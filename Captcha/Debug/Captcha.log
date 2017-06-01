@@ -1,2 +1,3 @@
-﻿  main.cpp
+﻿  RedAlgorithm.cpp
+d:\dropbox\documents\cv\-captcharecognizer\captcha\redalgorithm.cpp(37): warning C4244: =: преобразование "double" в "float", возможна потеря данных
   Captcha.vcxproj -> D:\Dropbox\Documents\CV\-CaptchaRecognizer\Debug\Captcha.exe

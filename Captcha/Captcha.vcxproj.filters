@@ -21,9 +21,6 @@
     <ClCompile Include="RedAlgorithm.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="PreprocessingForNeuronNet.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="BlueAlgorithm.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -42,9 +39,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="RedAlgorithm.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="PreprocessingForNeuronNet.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="BlueAlgorithm.h">

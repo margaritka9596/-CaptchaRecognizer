@@ -163,7 +163,7 @@ pair<double, double> writeResult(vector<captcha> box, vector<string> results, ve
 
 int main(int argc, char* argv[])
 {
-	string algorithmName = "blue";
+	string algorithmName = "red";
 	//cin >> algorithmName;
 
 	vector<captcha> box = getCaptcha(TRAINSETPATH + algorithmName + "\\testset\\", "jpg|jpeg|png");

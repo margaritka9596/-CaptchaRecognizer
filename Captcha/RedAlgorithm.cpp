@@ -3,76 +3,20 @@
 
 const int imgW = 83;
 const int imgH = 23;
+
 const int redFactor = 2;
 const double pi = 3.14159265358;
 
-vector<Mat> segmentate2_0(Mat img)
+Mat RedAlgorithm::preprocessing(Mat inputImg)
 {
-	Mat image;
-	img.copyTo(image);
-
-	vector<Vec3b> colors;
-	Mat imageWithComponents;
-	image.copyTo(imageWithComponents);
-	unsigned int cnt = 0;
-	for (int x = 0; x < imageWithComponents.rows; ++x)
-		for (int y = 0; y < imageWithComponents.cols; ++y)
-		{
-			Vec3b color = imageWithComponents.at<Vec3b>(x, y);
-			if (color[0] == 255 && color[1] == 255 && color[2] == 255)
-			{
-				floodFill(imageWithComponents, Point(y, x), CV_RGB(10 * cnt + 10, 0, 0));
-				color[0] = 0; color[1] = 0; color[2] = 10 * cnt++ + 10;
-				colors.push_back(color);
-			}
-		}
-
-	vector<Point> symbol;
-	vector<Mat> segments;
-	Mat imageForShowRect;
-
-	for (unsigned int k = 0; k < colors.size(); ++k)
-	{
-		symbol.clear();
-		for (int x = 0; x < imageWithComponents.rows; ++x)
-			for (int y = 0; y < imageWithComponents.cols; ++y)
-			{
-				Vec3b color = imageWithComponents.at<Vec3b>(x, y);
-				if (color[2] == colors[k][2])
-					symbol.push_back(Point(y, x));
-			}
-
-		RotatedRect rRect = minAreaRect(symbol);
-		Point2f vertices[4];
-		rRect.points(vertices);
-
-		Rect rect = boundingRect(symbol);
-
-		///not necessary
-		if (k == 0)
-			image.copyTo(imageForShowRect);
-		rectangle(imageForShowRect, rect, CV_RGB(255, 0, 0));
-		//imshow("segmented", imageForShowRect); waitKey(); destroyWindow("segmented");
-
-		Mat segment;
-		image(rect).copyTo(segment);
-		segments.push_back(segment);
-	}
-
-	return segments;
-}
-
-vector<Mat> RedAlgorithm::preprocessing(Mat inputImg)
-{
-	Mat outputImg, mapX, mapY;
 	int rImgH = imgH * redFactor;
 	int rImgW = imgW * redFactor;
 
-	mapX = cvCreateImage(cvSize(rImgW, rImgH), IPL_DEPTH_32F, 1);
+	Mat mapX(Size(rImgW, rImgH), CV_32FC1);
 
 	for (int i = 0; i < mapX.rows; ++i)
 		for (int j = 0; j < mapX.cols; ++j)
-			mapX.at<float>(i, j) = j;
+			mapX.at<float>(i, j) = (float)j;
 
 	double	t = 4.0, // top offset
 		scale1 = 2.3,
@@ -84,7 +28,7 @@ vector<Mat> RedAlgorithm::preprocessing(Mat inputImg)
 		fh = h * redFactor,
 		fstep1 = pi / (step1 * redFactor);
 
-	mapY = cvCreateImage(cvSize(rImgW, rImgH), IPL_DEPTH_32F, 1);
+	Mat mapY(Size(rImgW, rImgH), CV_32FC1);
 
 	for (int i = 0; i < mapY.rows; ++i)
 		for (int j = 0; j < mapY.cols; ++j)
@@ -93,14 +37,10 @@ vector<Mat> RedAlgorithm::preprocessing(Mat inputImg)
 			mapY.at<float>(i, j) = ((i - ft) * ((fh - q) / fh) + q) * (1 + j / stretch) + ft;
 		}
 
-	outputImg = cvCreateImage(
-		cvSize(rImgW, rImgH),
-		IPL_DEPTH_8U,
-		1);
+	Mat outputImg(Size(rImgW, rImgH), CV_8UC1);
 
 	//масштабирование (увеличение в два раза)
-	Size dsize(rImgW, rImgH);
-	resize(inputImg, outputImg, dsize, redFactor, redFactor, CV_INTER_CUBIC);
+	resize(inputImg, outputImg, Size(rImgW, rImgH), redFactor, redFactor, CV_INTER_CUBIC);
 	//imshow("scaled input", outputImg);
 
 	//избавляемся от волнового эффекта немного
@@ -158,21 +98,75 @@ vector<Mat> RedAlgorithm::preprocessing(Mat inputImg)
 	//imshow("1", outputImg);
 	//imwrite("outputImgSegmented.jpg", outputImg);
 
-	//сегментация
-	vector<Mat> Segments = segmentate2_0(outputImg);
-	/*for (int i = 0; i < Segments.size(); ++i)
+	return outputImg;
+}
+
+vector<Mat> RedAlgorithm::segmentate(Mat img)
+{
+	Mat image;
+	img.copyTo(image);
+
+	vector<Vec3b> colors;
+	Mat imageWithComponents;
+	image.copyTo(imageWithComponents);
+	unsigned int cnt = 0;
+	for (int x = 0; x < imageWithComponents.rows; ++x)
+		for (int y = 0; y < imageWithComponents.cols; ++y)
+		{
+			Vec3b color = imageWithComponents.at<Vec3b>(x, y);
+			if (color[0] == 255 && color[1] == 255 && color[2] == 255)
+			{
+				floodFill(imageWithComponents, Point(y, x), CV_RGB(10 * cnt + 10, 0, 0));
+				color[0] = 0; color[1] = 0; color[2] = 10 * cnt++ + 10;
+				colors.push_back(color);
+			}
+		}
+
+	vector<Point> symbol;
+	vector<Mat> segments;
+	Mat imageForShowRect;
+
+	for (unsigned int k = 0; k < colors.size(); ++k)
 	{
-		imshow("seg"+ i, Segments[i]);
-	}*/
-	//cout << "size before filter" << Segments.size() << endl;
+		symbol.clear();
+		for (int x = 0; x < imageWithComponents.rows; ++x)
+			for (int y = 0; y < imageWithComponents.cols; ++y)
+			{
+				Vec3b color = imageWithComponents.at<Vec3b>(x, y);
+				if (color[2] == colors[k][2])
+					symbol.push_back(Point(y, x));
+			}
+
+		RotatedRect rRect = minAreaRect(symbol);
+		Point2f vertices[4];
+		rRect.points(vertices);
+
+		Rect rect = boundingRect(symbol);
+
+		///not necessary
+		if (k == 0)
+			image.copyTo(imageForShowRect);
+		rectangle(imageForShowRect, rect, CV_RGB(255, 0, 0));
+		//imshow("segmented", imageForShowRect); waitKey(); destroyWindow("segmented");
+
+		Mat segment;
+		image(rect).copyTo(segment);
+		segments.push_back(segment);
+	}
+
+/*	for (int i = 0; i < segments.size(); ++i)
+	{
+		imshow("seg"+ i, segments[i]);
+	} 
+*/	//cout << "size before filter" << Segments.size() << endl;
 
 	//фильтрация и коррекция сегментов
 	vector<Mat> FinalSegments;
-	int averageSegWidth = outputImg.cols / 5;
+	int averageSegWidth = image.cols / 5;
 
-	for (unsigned int i = 0; i < Segments.size(); ++i)
+	for (unsigned int i = 0; i < segments.size(); ++i)
 	{
-		Mat curSeg = Segments[i];
+		Mat curSeg = segments[i];
 		if ((curSeg.cols > averageSegWidth / 4) && (curSeg.rows > averageSegWidth / 4))
 		{
 			//segment which has 2 or three symbols
@@ -180,7 +174,7 @@ vector<Mat> RedAlgorithm::preprocessing(Mat inputImg)
 			{
 				int halfW = curSeg.cols / 2;
 				int halfH = curSeg.rows;
-				
+
 				FinalSegments.push_back(curSeg(Rect(0, 0, halfW, halfH))); //left part
 				FinalSegments.push_back(curSeg(Rect(halfW, 0, halfW - 1, halfH))); //right part
 			}
@@ -188,24 +182,27 @@ vector<Mat> RedAlgorithm::preprocessing(Mat inputImg)
 				FinalSegments.push_back(curSeg);
 		}
 	}
-/*
-	for (int i = 0; i < FinalSegments.size(); ++i)
-	{
-		imshow("Finalseg" + i, FinalSegments[i]);
-	}
-*/
-	PreprocessingForNeuronNet obj;
-	FinalSegments = obj.ResizeAndChangeBackground(FinalSegments);
 
 	for (unsigned int i = 0; i < FinalSegments.size(); ++i)
 	{
-		//imshow("FinalsegResized" + i, FinalSegments[i]);
+		Mat temp;
+		FinalSegments[i].copyTo(temp);
+		cvtColor(temp, temp, CV_BGR2GRAY);
+		int rImgW = 118;
+		int rImgH = 227;
+		resize(temp, temp, Size(rImgW, rImgH));
+		threshold(temp, temp, 40, 255.0, THRESH_BINARY_INV);
+		temp.copyTo(FinalSegments[i]);
+
+		//imshow("Finalseg" + to_string(i), FinalSegments[i]); waitKey(); destroyWindow("Finalseg" + to_string(i));
+
 		string ext = ".jpg";
-		string z = "C:\\Users\\Margo\\Desktop\\try\\SegmentNum_" + to_string(i) + ext;
+		string z = "try\\SegmentNum_" + to_string(i) + ext;
 		const char* z1 = z.c_str();
 		//imwrite(z1, FinalSegments[i]);
 	}
 	//cout << "size after filter" << FinalSegments.size() << endl;
+
 	return FinalSegments;
 }
 
@@ -216,5 +213,5 @@ string RedAlgorithm::recognizeSegments(vector<Mat> segments)
 
 string RedAlgorithm::recognize(Mat inputImg)
 {
-	return recognizeSegments(preprocessing(inputImg));
+	return recognizeSegments(segmentate(preprocessing(inputImg)));
 }

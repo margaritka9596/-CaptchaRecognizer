@@ -18,14 +18,12 @@ using namespace cv;
 typedef pair<Mat, string> captcha;
 
 vector<captcha> getCaptcha(string path, string ext);
-/*
-class Recognizer 
-{
-	Recognizer();
-	
-	virtual Mat preprocess(Mat);
-	virtual vector<Mat> segmentate(Mat);
-	virtual string recognizeSegment(Mat);
-	virtual string recognize(Mat);
-};
-*/
+
+//class Recognizer 
+//{
+//public:
+//	virtual Mat preprocess(Mat) = 0;
+//	virtual vector<Mat> segmentate(Mat) = 0;
+//	virtual string recognizeSegment(Mat) = 0;
+//	virtual string recognize(Mat) = 0;
+//};

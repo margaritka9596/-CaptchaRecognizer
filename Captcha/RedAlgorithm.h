@@ -1,9 +1,10 @@
 #include "Captcha.h"
 
-class RedAlgorithm
+class RedAlgorithm //: Recognizer
 {
 public:
-	vector<Mat> preprocessing(Mat inputImg);
+	Mat preprocessing(Mat inputImg);
+	vector<Mat> segmentate(Mat inputImg);
 	string recognizeSegments(vector<Mat> segments);
 	string recognize(Mat inputImg);
 };

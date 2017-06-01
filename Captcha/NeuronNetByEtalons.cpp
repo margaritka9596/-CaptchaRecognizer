@@ -112,6 +112,8 @@ vector<double> trainNet(vector<captcha> etalons)
 
 string testNet(Mat inputImg, vector<captcha> etalons, vector<double> W, string algorithmName)
 {
+	//imshow("show", inputImg); waitKey(); destroyWindow("show");
+
 	int ellipseCount = getEllipseCount(inputImg);
 	bool isTopEllipse = topEllipse(inputImg);
 	bool isBottomEllipse = bottomEllipse(inputImg);

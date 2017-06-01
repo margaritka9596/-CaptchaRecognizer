@@ -157,7 +157,6 @@
     <ClCompile Include="Captcha.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NeuronNetByEtalons.cpp" />
-    <ClCompile Include="PreprocessingForNeuronNet.cpp" />
     <ClCompile Include="RedAlgorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,7 +164,6 @@
     <ClInclude Include="Captcha.h" />
     <ClInclude Include="Classes.h" />
     <ClInclude Include="NeuronNetByEtalons.h" />
-    <ClInclude Include="PreprocessingForNeuronNet.h" />
     <ClInclude Include="RedAlgorithm.h" />
   </ItemGroup>
   <ItemGroup>
