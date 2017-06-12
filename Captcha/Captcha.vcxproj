@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlackAlgorithm.cpp" />
     <ClCompile Include="BlueAlgorithm.cpp" />
     <ClCompile Include="Captcha.cpp" />
     <ClCompile Include="main.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="RedAlgorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlackAlgorithm.h" />
     <ClInclude Include="BlueAlgorithm.h" />
     <ClInclude Include="Captcha.h" />
     <ClInclude Include="Classes.h" />

@@ -16,6 +16,7 @@ vector<captcha> getCaptcha(string path, string ext) {
 			if (ext.find(extension) != string::npos)
 			{
 				Mat image = imread(path + filename, CV_LOAD_IMAGE_COLOR);
+
 				if (image.data)
 				{
 					pair<Mat, string> temp(image, value);

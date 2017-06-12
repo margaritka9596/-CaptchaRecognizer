@@ -11,6 +11,7 @@
 #define TRAINSETPATH "trainset\\"
 #define ETALONSPATH "ForNeuronNet\\"
 #define TEXTFILENAME "result_"
+#define pi 3.14159265358
 
 using namespace std;
 using namespace cv;

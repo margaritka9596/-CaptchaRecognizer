@@ -30,6 +30,9 @@
     <ClCompile Include="Captcha.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="BlackAlgorithm.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Captcha.h">
@@ -45,6 +48,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="NeuronNetByEtalons.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackAlgorithm.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

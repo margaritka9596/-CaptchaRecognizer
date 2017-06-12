@@ -1,8 +1,6 @@
 #include "Captcha.h"
 #include "Classes.h"
 
-int i = 0;
-
 int getEllipseCount(Mat inputImg)
 {
 	Mat img;

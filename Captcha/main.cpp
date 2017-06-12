@@ -120,17 +120,23 @@ string captchaRecognize(Mat image, string algorithmName) {
 		//std::cout << "res = " << res << endl;
 	}
 	else
-	{
-		BlueAlgorithm recognizer;
-		res = recognizer.recognize(image);
-	}
+		if (algorithmName == "blue")
+		{
+			BlueAlgorithm recognizer;
+			res = recognizer.recognize(image);
+		}
+		else
+		{
+			BlackAlgorithm recognizer;
+			res = recognizer.recognize(image);
+		}
 	return res;
 }
 
 vector<string> fitCaptchaResult(vector<captcha> box, string algorithmName) {
 	vector<string> result(box.size());
 	int endI = box.size();
-	//int endI = 43;
+	//int endI = 1;
 
 	for (int i = 0; i < endI; ++i) {
 		//cout << box[i].second << " ";
@@ -164,7 +170,7 @@ pair<double, double> writeResult(vector<captcha> box, vector<string> results, ve
 
 int main(int argc, char* argv[])
 {
-	string algorithmName = "red";
+	string algorithmName = "black";
 	//cin >> algorithmName;
 
 	vector<captcha> box = getCaptcha(TRAINSETPATH + algorithmName + "\\testset\\", "jpg|jpeg|png");

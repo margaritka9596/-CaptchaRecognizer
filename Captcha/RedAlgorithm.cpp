@@ -5,7 +5,6 @@ const int imgW = 83;
 const int imgH = 23;
 
 const int redFactor = 2;
-const double pi = 3.14159265358;
 
 Mat RedAlgorithm::preprocessing(Mat inputImg)
 {
@@ -38,11 +37,18 @@ Mat RedAlgorithm::preprocessing(Mat inputImg)
 		}
 
 	Mat outputImg(Size(rImgW, rImgH), CV_8UC1);
+	///
+	/*string ext = ".jpg";
+	string z = "try\\Scaled" + ext;
+	const char* z1 = z.c_str();*/
+	
 
 	//масштабирование (увеличение в два раза)
 	resize(inputImg, outputImg, Size(rImgW, rImgH), redFactor, redFactor, CV_INTER_CUBIC);
 	//imshow("scaled input", outputImg);
-
+	///
+	/*imwrite(z1, outputImg);*/
+	
 	//избавляемся от волнового эффекта немного
 	remap(
 		outputImg, outputImg,
@@ -51,8 +57,18 @@ Mat RedAlgorithm::preprocessing(Mat inputImg)
 		BORDER_CONSTANT,
 		cvScalarAll(0));
 
+	/*z = "try\\remap" + ext;
+	z1 = z.c_str();
+	imwrite(z1, outputImg);*/
+
 	//бинаризация
 	threshold(outputImg, outputImg, 200, 255, CV_THRESH_BINARY);
+	
+	///
+	/*z = "try\\afterThreshold" + ext;
+	z1 = z.c_str();
+	imwrite(z1, outputImg*/
+
 	//imshow("afterThreshold", outputImg);
 
 	//закрашиваем мелкие связнаые области < 10px  (дырки внутри символов)
@@ -61,10 +77,17 @@ Mat RedAlgorithm::preprocessing(Mat inputImg)
 
 	dilate(outputImg, outputImg, tip_spacing1);
 	//imshow("afterDilate", outputImg); 
+	/*z = "try\\afterDilate" + ext;
+	z1 = z.c_str();
+	imwrite(z1, outputImg);*/
 
 	Mat tip_spacing2 = getStructuringElement(MORPH_ELLIPSE, Size(little_spaces + 1, little_spaces + 1), Point(-1, -1));
 	erode(outputImg, outputImg, tip_spacing1);
 	//imshow("afterErode", outputImg);
+
+/*	z = "try\\afterErode" + ext;
+	z1 = z.c_str();
+	imwrite(z1, outputImg);*/
 
 	//imwrite("outputImg.jpg", outputImg);
 
@@ -96,8 +119,12 @@ Mat RedAlgorithm::preprocessing(Mat inputImg)
 			}
 
 	//imshow("1", outputImg);
-	waitKey();
+	//waitKey();
 	//imwrite("outputImgSegmented.jpg", outputImg);
+
+	/*z = "try\\afterSeg" + ext;
+	z1 = z.c_str();
+	imwrite(z1, outputImg);*/
 
 	return outputImg;
 }
